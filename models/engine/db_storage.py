@@ -77,18 +77,15 @@ class DBStorage:
 
     def get(self, cls, id):
         '''Returns the object based on the class and its ID.'''
-        found_obj = globals().get(str(cls))(id)
-        if cls is not None:
-            return found_obj
-        else:
-            return None
-        
+        dict_cls = self.all(cls)
+        for ind in dict_cls.values():
+            if ind.id == id:
+                return ind
+            else:
+                return None
+
     def count(self, cls=None):
         '''Returns the number of objects in
         storage matching the given class.'''
-        count_obj = len([obj for obj in globals().values()
-                        if isinstance(obj, cls)])
-        if cls is not None:
-            return count_obj
-        else:
-            return len(globals().values())
+        dict_cls = self.all(cls)
+        return len(dict_cls.values())
