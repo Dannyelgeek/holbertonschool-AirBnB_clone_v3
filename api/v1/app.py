@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-'''API app file.'''
+'''API app connect file.'''
 from flask import Flask
 from models import storage
 from api.v1.views import app_views
@@ -19,6 +19,6 @@ def handler():
 if __name__ == '__main__':
     app.run(
             host=getenv('HBNB_API_HOST', '0.0.0.0'),
-            port=getenv('HBNB_API_PORT', '5000'),
+            port=int(getenv('HBNB_API_PORT', '5000')),
             threaded=True
             )
