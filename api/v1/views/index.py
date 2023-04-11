@@ -21,13 +21,12 @@ def return_ok():
 @app_views.route('/stats', strict_slashes=False)
 def count_obj():
     ''''''
-    classes = {"Amenity": Amenity,
-               "BaseModel": BaseModel,
-               "City": City,
-               "Place": Place,
-               "Review": Review,
-               "State": State,
-               "User": User}
+    classes = {"amenities": Amenity,
+               "cities": City,
+               "places": Place,
+               "reviews": Review,
+               "states": State,
+               "users": User}
     dict_obj = {}
     for cls_name, cls_count in classes.items():
         dict_obj[cls_name] = storage.count(cls_count)
