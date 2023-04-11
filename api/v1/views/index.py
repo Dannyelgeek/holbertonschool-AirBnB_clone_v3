@@ -13,13 +13,13 @@ from models.user import User
 from models.engine.file_storage import classes
 
 
-@app_views.route('/status')
+@app_views.route('/status', strict_slashes=False)
 def return_ok():
     '''return status OK'''
     return jsonify(status='OK')
 
 
-@app_views.route('/stats')
+@app_views.route('/stats', strict_slashes=False)
 def count_obj():
     ''''''
     dict_obj = {}
