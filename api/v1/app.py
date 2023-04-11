@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 '''API app connect file.'''
+from os import getenv
+from models import storage
 from api.v1.views import app_views
 from flask import Flask
-from models import storage
-from os import getenv
 
 
 app = Flask(__name__)
