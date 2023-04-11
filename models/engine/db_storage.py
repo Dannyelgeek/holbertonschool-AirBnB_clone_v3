@@ -86,7 +86,8 @@ class DBStorage:
     def count(self, cls=None):
         '''Returns the number of objects in
         storage matching the given class.'''
-        count_obj = len([obj for obj in globals().values() if isinstance(obj, cls)])
+        count_obj = len([obj for obj in globals().values()
+                        if isinstance(obj, cls)])
         if cls is not None:
             return count_obj
         else:
