@@ -15,6 +15,7 @@ def teardown_appcontext(exception):
     '''calls storage.close()'''
     storage.close()
 
+
 @app.errorhandler(404)
 def page_not_found(error):
     '''404 error message'''
