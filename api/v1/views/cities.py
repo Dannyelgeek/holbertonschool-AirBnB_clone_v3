@@ -41,6 +41,7 @@ def delete_city(city_id):
     storage.save()
     return jsonify(empty_dict), 200
 
+
 @app_views.route('/states/<state_id>/cities', methods=['POST'],
                  strict_slashes=False)
 def new_city(state_id):
@@ -57,3 +58,21 @@ def new_city(state_id):
     setattr(city, 'state_id', state_id)
     city.save()
     return jsonify(city.to_dict()), 201
+
+
+@app_views.route('/cities/<city_id>', methods=['PUT'],
+                 strict_slashes=False)
+def uodate_city(city_id):
+    '''Updates a State object'''
+    ct = storage.get(City, city_id)
+    if not ct:
+        abort(404)
+    new_request = request.get_json()
+    if not new_request:
+        abort(400, description='Not a JSON')
+    for key, value in new_request.items():
+        if key in ['id', 'created_at', 'updated_at']:
+            continue
+        setattr(ct, key, value)
+    ct.save()
+    return make_response(jsonify(ct.to_dict())), 200
