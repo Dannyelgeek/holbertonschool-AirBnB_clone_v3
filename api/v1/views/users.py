@@ -14,7 +14,7 @@ def user_list():
 
 
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
-def state_usr_obj(user_id):
+def usr_obj(user_id):
     '''Retrieves a State object'''
     for usr_sto in storage.all(User).values():
         if usr_sto.id == user_id:
@@ -37,7 +37,7 @@ def delete_user(user_id):
 
 
 @app_views.route('/users/', methods=['POST'], strict_slashes=False)
-def new_user_state():
+def new_user():
     '''Creates a State'''
     new_request = request.get_json()
     if not new_request:
@@ -49,12 +49,12 @@ def new_user_state():
     return jsonify(state.to_dict()), 201
 
 
-@app_views.route('/states/<state_id>', methods=['PUT'],
+@app_views.route('/users/<user_id>', methods=['PUT'],
                  strict_slashes=False)
-def update_state(state_id):
+def update_user(user_id):
     '''Updates a State object'''
-    st = storage.get(State, state_id)
-    if not st:
+    usr = storage.get(User, user_id)
+    if not usr:
         abort(404)
     new_request = request.get_json()
     if not new_request:
@@ -62,6 +62,6 @@ def update_state(state_id):
     for key, value in new_request.items():
         if key in ['id', 'created_at', 'updated_at']:
             continue
-        setattr(st, key, value)
-    st.save()
-    return make_response(jsonify(st.to_dict())), 200
+        setattr(usr, key, value)
+    usr.save()
+    return make_response(jsonify(usr.to_dict())), 200
