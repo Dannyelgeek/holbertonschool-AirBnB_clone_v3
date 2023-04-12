@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-'''places app connect file.'''
+"""Amenity flask handler"""
+
+
 from api.v1.views import app_views
 from flask import jsonify, abort, request, make_response
 from models import storage
@@ -8,77 +10,76 @@ from models.place import Place
 from models.user import User
 
 
-@app_views.route('/cities/<city_id>/places', methods=['GET'],
-                 strict_slashes=False)
-def place_list(city_id):
-    '''Retrieves the list of all Place objects'''
-    ct = storage.get(City, city_id)
-    if not ct:
+@app_views.route(
+        '/cities/<city_id>/places', methods=['GET'], strict_slashes=False)
+def places_by_id(city_id):
+    city = storage.get(City, city_id)
+    if not city:
         abort(404)
-    pl_list = [pl_list.to_dict() for pl_list in ct.pl_list]
-    return jsonify(pl_list)
+    places = [places.to_dict() for places in city.places]
+    return jsonify(places)
 
 
-@app_views.route('/places/<place_id>', methods=['GET'],
-                 strict_slashes=False)
-def place_obj(place_id):
-    '''Retrieves a Place object'''
-    pl = storage.get(Place, place_id)
-    if pl:
-        return jsonify(pl.to_dict())
-    else:
+@app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
+def place_by_id(place_id):
+    place = storage.get(Place, place_id)
+    if place:
+        return jsonify(place.to_dict())
+    abort(404)
+
+
+@app_views.route(
+        '/places/<place_id>', methods=['DELETE'], strict_slashes=False)
+def deletes_place_by_id(place_id):
+    place = storage.get(Place, place_id)
+    if not place:
         abort(404)
-
-
-@app_views.route('/cities/<place_id>', methods=['DELETE'],
-                 strict_slashes=False)
-def delete_place(place_id):
-    '''Deletes a City object'''
-    empty_dict = {}
-    pl = storage.get(Place, place_id)
-    if not pl:
-        abort(404)
-    pl.delete()
+    place.delete()
     storage.save()
-    return jsonify(empty_dict), 200
+    return jsonify(), 200
 
 
-@app_views.route('/cities/<city_id>/places', methods=['POST'],
-                 strict_slashes=False)
-def new_place(city_id):
-    '''Creates a City'''
-    ct = storage.get(City, city_id)
-    if not ct:
+@app_views.route(
+        'cities/<city_id>/places', methods=['POST'], strict_slashes=False)
+def create_place(city_id):
+    city = storage.get(City, city_id)
+    if not city:
         abort(404)
-    new_request = request.get_json()
-    if not new_request:
-        abort(400, description='Not a JSON')
-    if 'user_id' not in new_request.keys():
-        abort(400, description='Missing user_id')
-    user_vl = storage.get(User, ct['user_id'])
-    if not user_vl:
+
+    place_dict = request.get_json()
+    if not place_dict:
+        abort(400, 'Not a JSON')
+
+    if 'user_id' not in place_dict.keys():
+        abort(400, 'Missing user_id')
+
+    valid_user = storage.get(User, place_dict['user_id'])
+    if not valid_user:
         abort(404)
-    if 'name' not in new_request.keys():
+
+    if 'name' not in place_dict.keys():
         abort(400, 'Missing name')
-    place_recent = Place(**new_request)
-    setattr(place_recent, 'city_id', city_id)
-    place_recent.save()
-    return jsonify(place_recent.to_dict()), 201
+
+    new_place = Place(**place_dict)
+    setattr(new_place, 'city_id', city_id)
+    new_place.save()
+    return jsonify(new_place.to_dict()), 201
 
 
-@app_views.route('/places/<place_id>', methods=['PUT'],
-                 strict_slashes=False)
-def place_now(place_id):
-    '''Updates a State object'''
-    pl = storage.get(Place, place_id)
-    if not pl:
+@app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
+def update_place_by_id(place_id):
+    place = storage.get(Place, place_id)
+    if not place:
         abort(404)
-    new_request = request.get_json()
-    if not new_request:
-        abort(400, description='Not a JSON')
-    for key, value in new_request.items():
+
+    body = request.get_json()
+    if not body:
+        abort(400, 'Not a JSON')
+
+    for key, value in body.items():
         if key in ['id', 'created_at', 'updated_at']:
             continue
-        setattr(pl, key, value)
+        else:
+            setattr(place, key, value)
     storage.save()
-    return make_response(jsonify(pl.to_dict())), 200
+    return make_response(jsonify(place.to_dict()), 200)
