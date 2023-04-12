@@ -51,13 +51,18 @@ def new_review(place_id):
         abort(404)
     new_request = request.get_json()
     if not new_request:
-        abort(400, description='Not a JSON')
-    if 'name' not in new_request.keys():
-        abort(400, description='Missing name')
+        return make_response(jsonify({'error':'Not a JSON'}), 400)
+    if 'user_id' not in new_request:
+        return make_response(jsonify({'error':'Missing user_id'}), 400)
+    usr = storage.get('User', new_request['user_id'])
+    if usr is None:
+        abort(404)
+    if 'text' not in new_request:
+        return make_response(jsonify({'error':'Missing text'}), 400)
+    new_request['place_id'] = place_id
     rw = Review(**new_request)
-    setattr(rw, 'state_id', place_id)
     rw.save()
-    return jsonify(rw.to_dict()), 201
+    return make_response(jsonify(rw.to_dict())), 201
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'],
@@ -69,10 +74,11 @@ def uodate_city(review_id):
         abort(404)
     new_request = request.get_json()
     if not new_request:
-        abort(400, description='Not a JSON')
+        return make_response(jsonify({'error':'Not a JSON'}), 400)
     for key, value in new_request.items():
-        if key in ['id', 'created_at', 'updated_at']:
+        if key in ['id', 'created_at', 'updated_at',
+                   'user_id', 'place_id']:
             continue
         setattr(rw, key, value)
     rw.save()
-    return make_response(jsonify(rw.to_dict())), 200
+    return jsonify(rw.to_dict())
