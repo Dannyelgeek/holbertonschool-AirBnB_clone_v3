@@ -14,12 +14,12 @@ def City_list(state_id):
     st = storage.get(State, state_id)
     if not st:
         abort(404)
-    ct_list =[ct_list.to_dict() for ct_list in st.cities]
+    ct_list = [ct_list.to_dict() for ct_list in st.cities]
     return jsonify(ct_list)
 
 
 @app_views.route('/cities/<city_id>', methods=['GET'],
-                  strict_slashes=False)
+                 strict_slashes=False)
 def city_obj(city_id):
     '''Retrieves a State object'''
     ct = storage.get(City, city_id)
