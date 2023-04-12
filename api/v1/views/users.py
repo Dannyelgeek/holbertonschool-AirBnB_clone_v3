@@ -42,8 +42,10 @@ def new_user():
     new_request = request.get_json()
     if not new_request:
         abort(400, description='Not a JSON')
-    if 'name' not in new_request.keys():
-        abort(400, description='Missing name')
+    if 'email' not in new_request.keys():
+        abort(400, description='Missing email')
+    if 'password' not in new_request.keys():
+        abort(400, 'Missing password')
     usr = User(**new_request)
     usr.save()
     return jsonify(usr.to_dict()), 201
