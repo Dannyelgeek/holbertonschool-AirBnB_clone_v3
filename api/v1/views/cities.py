@@ -27,3 +27,16 @@ def city_obj(city_id):
         return jsonify(ct.to_dict())
     else:
         abort(404)
+
+
+@app_views.route('/cities/<city_id>', methods=['DELETE'],
+                 strict_slashes=False)
+def delete_state(city_id):
+    '''Deletes a State object'''
+    empty_dict = {}
+    ct = storage.get(City, city_id)
+    if not ct:
+        abort(404)
+    ct.delete()
+    storage.save()
+    return jsonify(empty_dict), 200
