@@ -44,9 +44,9 @@ def new_state():
     '''Creates a State'''
     new_request = request.get_json()
     if not new_request:
-        abort(404, description='Not a JSON')
+        abort(400, description='Not a JSON')
     if 'name' not in new_request.keys():
-        abort(404, description='Missing name')
+        abort(400, description='Missing name')
     state = State(**new_request)
     state.save()
     return jsonify(state.to_dict()), 201
@@ -61,7 +61,7 @@ def uodate_state(state_id):
         abort(404)
     new_request = request.get_json()
     if not new_request:
-        abort(404, description='Not a JSON')
+        abort(400, description='Not a JSON')
     for key, value in new_request.items():
         if key in ['id', 'created_at', 'updated_at']:
             continue
