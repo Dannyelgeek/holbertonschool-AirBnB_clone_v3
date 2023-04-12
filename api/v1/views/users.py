@@ -51,7 +51,7 @@ def new_user_state():
 
 @app_views.route('/states/<state_id>', methods=['PUT'],
                  strict_slashes=False)
-def uodate_state(state_id):
+def update_state(state_id):
     '''Updates a State object'''
     st = storage.get(State, state_id)
     if not st:
