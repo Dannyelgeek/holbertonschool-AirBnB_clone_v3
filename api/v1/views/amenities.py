@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 '''state app connect file.'''
 from api.v1.views import app_views
+from flask import jsonify, abort, request, make_response
 from models import storage
 from models.amenity import Amenity
-from flask import jsonify, abort, request, make_response
 
 
 @app_views.route('/amenities/', methods=['GET'], strict_slashes=False)
