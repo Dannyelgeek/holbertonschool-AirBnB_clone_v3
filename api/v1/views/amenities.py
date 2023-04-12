@@ -40,7 +40,7 @@ def delete_amenity(amenity_id):
 
 
 @app_views.route('/amenities/', methods=['POST'], strict_slashes=False)
-def new_state():
+def new_amenity():
     '''Creates a Amenity'''
     new_request = request.get_json()
     if not new_request:
@@ -54,7 +54,7 @@ def new_state():
 
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'],
                  strict_slashes=False)
-def uodate_state(amenity_id):
+def uodate_amenity(amenity_id):
     '''Updates a amenity object'''
     am = storage.get(Amenity, amenity_id)
     if not am:
