@@ -6,6 +6,8 @@ from models import storage
 from models.city import City
 from models.place import Place
 from models.user import User
+
+
 @app_views.route('/cities/<city_id>/places/', methods=['GET'],
                  strict_slashes=False)
 def place_list(city_id):
@@ -15,6 +17,8 @@ def place_list(city_id):
         abort(404)
     pl_list = [pl_list.to_dict() for pl_list in pl.cities]
     return jsonify(pl_list)
+
+
 @app_views.route('/places/<place_id>', methods=['GET'],
                  strict_slashes=False)
 def place_obj(place_id):
@@ -24,6 +28,8 @@ def place_obj(place_id):
         return jsonify(pl.to_dict())
     else:
         abort(404)
+
+
 @app_views.route('/cities/<place_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_place(place_id):
@@ -35,6 +41,8 @@ def delete_place(place_id):
     pl.delete()
     storage.save()
     return jsonify(empty_dict), 200
+
+
 @app_views.route('/cities/<city_id>/places', methods=['POST'],
                  strict_slashes=False)
 def new_city(city_id):
@@ -56,6 +64,8 @@ def new_city(city_id):
     setattr(place_recent, 'city_id', city_id)
     place_recent.save()
     return jsonify(place_recent.to_dict()), 201
+
+
 @app_views.route('/cities/<city_id>', methods=['PUT'],
                  strict_slashes=False)
 def place_now(place_id):
