@@ -31,7 +31,7 @@ def city_obj(city_id):
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'],
                  strict_slashes=False)
-def delete_state(city_id):
+def delete_city(city_id):
     '''Deletes a State object'''
     empty_dict = {}
     ct = storage.get(City, city_id)
