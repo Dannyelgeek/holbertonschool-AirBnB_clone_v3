@@ -11,18 +11,18 @@ from models.user import User
 @app_views.route('/cities/<city_id>/places/', methods=['GET'],
                  strict_slashes=False)
 def place_list(city_id):
-    '''Retrieves the list of all City objects'''
-    pl = storage.get(City, city_id)
-    if not pl:
+    '''Retrieves the list of all Place objects'''
+    ct = storage.get(City, city_id)
+    if not ct:
         abort(404)
-    pl_list = [pl_list.to_dict() for pl_list in pl.cities]
+    pl_list = [pl_list.to_dict() for pl_list in ct.pl_list]
     return jsonify(pl_list)
 
 
 @app_views.route('/places/<place_id>', methods=['GET'],
                  strict_slashes=False)
 def place_obj(place_id):
-    '''Retrieves a City object'''
+    '''Retrieves a Place object'''
     pl = storage.get(Place, place_id)
     if pl:
         return jsonify(pl.to_dict())
@@ -47,20 +47,20 @@ def delete_place(place_id):
                  strict_slashes=False)
 def new_place(city_id):
     '''Creates a City'''
-    pl = storage.get(City, city_id)
-    if not pl:
+    ct = storage.get(City, city_id)
+    if not ct:
         abort(404)
     new_request = request.get_json()
     if not new_request:
         abort(400, description='Not a JSON')
     if 'user_id' not in new_request.keys():
         abort(400, description='Missing user_id')
-    user_vl = storage.get(User, pl['user_id'])
+    user_vl = storage.get(User, ct['user_id'])
     if not user_vl:
         abort(404)
-    if 'name' not in pl.keys():
+    if 'name' not in new_request.keys():
         abort(400, 'Missing name')
-    place_recent = Place(**pl)
+    place_recent = Place(**new_request)
     setattr(place_recent, 'city_id', city_id)
     place_recent.save()
     return jsonify(place_recent.to_dict()), 201
